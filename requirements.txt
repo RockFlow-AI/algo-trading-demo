@@ -1,0 +1,7 @@
+pandas>=1.5.2
+polygon
+python-dotenv
+python_dateutil==2.8.2
+pytz>=2022.1
+Requests>=2.31.0
+fsspec[http]
