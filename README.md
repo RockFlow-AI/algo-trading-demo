@@ -32,3 +32,4 @@
 
 # 参考
 - [NautilusTrader文档](http://nautilustrader.io/docs/latest/)
+- [做空UVXY策略示例](https://medium.com/@truongb.duy/building-a-short-uvxy-strategy-in-python-using-nautilus-trader-296400d54147)
