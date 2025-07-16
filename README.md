@@ -24,4 +24,7 @@
 - 升级pip: `python -m pip install --upgrade pip`
 - 安装 requirements.txt 中的组件：`pip install -r requirements.txt`
 - 安装回测工具[NautilusTrader](https://github.com/nautechsystems/nautilus_trader)：`pip install nautilus_trader==1.216.0`
+
+## 运行模拟回测
+- 在项目根目录创建文件`.env`，并添加`POLYGON_API_KEY=<Your polygon API key>`
 - 运行 `ema_cross_trade_ticks.py`，验证安装是否成功 
