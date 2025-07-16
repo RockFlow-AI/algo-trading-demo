@@ -20,8 +20,10 @@ from algo.settings import POLYGON_API_KEY
 
 if __name__ == "__main__":
     CATALOG_PATH = os.getcwd() + "/catalog"
+    # Prepare to download historical data of stocks in ticker list
     poly = PolygonEquityData(POLYGON_API_KEY, ["TSLA"], CATALOG_PATH)
     poly.get_tickers()
+    # Specify datetime range and timeframe of historical data to download
     poly.get_bar_data_for_tickers(
         datetime.date(2021, 1, 4),
         datetime.date(2024, 12, 31),
@@ -32,12 +34,7 @@ if __name__ == "__main__":
     # Load existing catalog (only if not already created above)
     catalog = ParquetDataCatalog(CATALOG_PATH)
 
-    df = catalog.instruments()
-
     instrument = catalog.instruments(as_nautilus=True)[0]
-
-    start = dt_to_unix_nanos(pd.Timestamp('2021-01-04', tz='UTC'))
-    end = dt_to_unix_nanos(pd.Timestamp('2024-12-31', tz='UTC'))
 
     config = BacktestEngineConfig(
         trader_id=TraderId("BACKTESTER-001"),
@@ -57,7 +54,7 @@ if __name__ == "__main__":
         venue=XNAS,
         oms_type=OmsType.NETTING,
         book_type=BookType.L1_MBP,
-        account_type=AccountType.CASH,  # Spot CASH account (not for perpetuals or futures)
+        account_type=AccountType.MARGIN,
         base_currency=USD,
         starting_balances=[Money(1_000_000.0, USD)],
         trade_execution=True,  # Only use with L1_MBP book type or throttled book data
@@ -68,9 +65,11 @@ if __name__ == "__main__":
         BarSpecification(1, BarAggregation.DAY, PriceType.LAST),
         AggregationSource.EXTERNAL,
     )
+    # Add instrument and historical bars to backtest engine
     engine.add_instrument(instrument)
     engine.add_data(catalog.bars(bar_types=[str(bar_type)]))
 
+    # Special configuration for EMA cross strategy
     config = EMACrossConfig(
         instrument_id=instrument.id,
         bar_type=bar_type,
